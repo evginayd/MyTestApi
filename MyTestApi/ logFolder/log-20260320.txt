@@ -1,0 +1,9 @@
+2026-03-20 21:11:03.569 +03:00 [DBG] An 'IServiceProvider' was created for internal use by Entity Framework.
+2026-03-20 21:11:04.058 +03:00 [DBG] Entity Framework Core 10.0.5 initialized 'AppDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL:10.0.1+2679a9d768d14f34d077e037311f80acb6f6b3b4' with options: None
+2026-03-20 21:11:04.093 +03:00 [DBG] Creating DbConnection.
+2026-03-20 21:11:04.129 +03:00 [DBG] Created DbConnection. (35ms).
+2026-03-20 21:11:04.136 +03:00 [DBG] Opening connection to database 'MyTestApiDb' on server 'tcp://localhost:5432'.
+2026-03-20 21:11:04.277 +03:00 [ERR] An error occurred using the connection to database 'MyTestApiDb' on server 'tcp://localhost:5432'.
+2026-03-20 21:11:04.282 +03:00 [DBG] 'AppDbContext' disposed.
+2026-03-20 21:11:04.285 +03:00 [DBG] Disposing connection to database 'MyTestApiDb' on server 'tcp://localhost:5432'.
+2026-03-20 21:11:04.292 +03:00 [DBG] Disposed connection to database 'MyTestApiDb' on server 'tcp://localhost:5432' (2ms).
