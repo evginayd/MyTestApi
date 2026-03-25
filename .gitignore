@@ -1,0 +1,73 @@
+# ========================
+# BUILD FILES
+# ========================
+bin/
+obj/
+out/
+
+# ========================
+# VISUAL STUDIO / IDE
+# ========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+.vscode/
+.idea/
+
+# ========================
+# LOG FILES
+# ========================
+*.log
+logFolder/
+
+# ========================
+# ENV & SECRETS
+# ========================
+.env
+.env.*
+appsettings.Development.json
+appsettings.Local.json
+
+# ========================
+# DATABASE
+# ========================
+*.db
+*.sqlite
+
+# ========================
+# TEST RESULTS
+# ========================
+TestResults/
+*.trx
+
+# ========================
+# NUGET
+# ========================
+*.nupkg
+packages/
+
+# ========================
+# DOCKER
+# ========================
+docker-compose.override.yml
+
+# ========================
+# WWWROOT (build output varsa)
+# ========================
+wwwroot/dist/
+wwwroot/lib/
+
+# ========================
+# OS FILES
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# TEMP FILES
+# ========================
+*.tmp
+*.temp
