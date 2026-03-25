@@ -67,29 +67,41 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
-// 5. Middleware Pipeline - THE ORDER IS CRITICAL
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 1. First, catch any errors in the entire pipeline
 app.UseMiddleware<ExceptionMiddleware>();
-
-// 2. Security and Routing
 app.UseHttpsRedirection();
+app.UseRouting();
 
-app.UseRouting(); // Optional but recommended if using specific routing features
+app.UseAuthentication(); // Önce kimlik doğrulama
+app.UseAuthorization();  // Sonra yetkilendirme
 
-// 3. AUTHENTICATION FIRST: This validates the JWT token
-app.UseAuthentication();
-
-// 4. AUTHORIZATION SECOND: This checks if the validated user has access
-app.UseAuthorization();
-
-// 5. Finalize the endpoints
 app.MapControllers();
 app.UseStaticFiles();
 
+// --- KRİTİK DEĞİŞİKLİK BURADA BAŞLIYOR ---
+
+// Migration kodları app.Run()'dan ÖNCE olmalı!
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        // Veritabanının hazır olduğundan emin olmak için
+        context.Database.Migrate();
+        Console.WriteLine("Migration işlemleri başarıyla tamamlandı.");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Veritabanı taşınırken bir hata oluştu.");
+    }
+}
+
+// En son uygulama çalıştırılır
 app.Run();
