@@ -6,8 +6,6 @@ import { formatPrice } from '@/lib/utils';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import type { ProductDto } from '@/types';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://mytestapi-vndo.onrender.com';
-
 interface ProductCardProps {
   product: ProductDto;
   onDelete: (id: number) => void;
@@ -22,7 +20,7 @@ export function ProductCard({ product, onDelete }: ProductCardProps) {
         <div className="aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
           {product.imageUrl ? (
             <img
-              src={`${API_BASE}${product.imageUrl}`}
+              src={product.imageUrl}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />

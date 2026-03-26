@@ -9,7 +9,16 @@ export function useCreateProduct() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: CreateProductDto) => productsApi.create(data),
+    mutationFn: async ({ data, image }: { data: CreateProductDto; image: File | null }) => {
+      const response = await productsApi.create(data);
+      const product = response.data;
+
+      if (image && product.id) {
+        await productsApi.uploadImage(product.id, image);
+      }
+
+      return product;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success('Ürün başarıyla oluşturuldu');
@@ -26,7 +35,13 @@ export function useUpdateProduct(id: number) {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: UpdateProductDto) => productsApi.update(id, data),
+    mutationFn: async ({ data, image }: { data: UpdateProductDto; image: File | null }) => {
+      await productsApi.update(id, data);
+
+      if (image) {
+        await productsApi.uploadImage(id, image);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success('Ürün başarıyla güncellendi');

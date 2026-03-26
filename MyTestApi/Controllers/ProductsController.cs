@@ -6,6 +6,7 @@ using MyTestApi.Data;
 using MyTestApi.DTOs;
 using MyTestApi.Models;
 using MyTestApi.Services.Interfaces;
+using MyTestApi.Services.Implementations;
 
 namespace MyTestApi.Controllers
 {
@@ -17,11 +18,14 @@ namespace MyTestApi.Controllers
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
 
-        public ProductsController(IProductService service, IMapper mapper, AppDbContext context)
+        private readonly ICloudinaryService _cloudinaryService;
+
+        public ProductsController(IProductService service, IMapper mapper, AppDbContext context, ICloudinaryService cloudinaryService)
         {
             _service = service;
             _mapper = mapper;
             _context = context;
+            _cloudinaryService = cloudinaryService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -105,20 +109,21 @@ namespace MyTestApi.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            var extension = Path.GetExtension(file.FileName);
-            var fileName = $"product_{id}_{Guid.NewGuid()}{extension}";
-            var filePath = Path.Combine("wwwroot/uploads", fileName);
-
-            // Save file 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            // Eski resmi Cloudinary'den sil
+            if (!string.IsNullOrEmpty(product.ImagePath) && product.ImagePath.Contains("cloudinary"))
             {
-                await file.CopyToAsync(stream);
+                var publicId = _cloudinaryService.GetPublicIdFromUrl(product.ImagePath);
+                if (!string.IsNullOrEmpty(publicId))
+                    await _cloudinaryService.DeleteImageAsync(publicId);
             }
 
-            // Save path to DB 
-            product.ImagePath = $"/uploads/{fileName}"; 
+            // Yeni resmi Cloudinary'ye yükle
+            var imageUrl = await _cloudinaryService.UploadImageAsync(file);
+
+            // URL'i DB'ye kaydet
+            product.ImagePath = imageUrl;
             await _service.UpdateImagePathAsync(product);
-            return Ok(new { imageUrl = product.ImagePath });
+            return Ok(new { imageUrl });
         }
 
     }

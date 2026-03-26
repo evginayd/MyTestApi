@@ -63,6 +63,7 @@ builder.Services.AddCors(options =>
 // 2. Servis ve Repository Kayıtları (Dependency Injection)
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
 
 // 3. Controller ve FluentValidation Yapılandırması
 builder.Services.AddControllers();

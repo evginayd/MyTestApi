@@ -9,8 +9,6 @@ import { Modal } from '@/components/ui/Modal';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { formatPrice } from '@/lib/utils';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://mytestapi-vndo.onrender.com';
-
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -45,7 +43,7 @@ export function ProductDetail() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="aspect-square bg-gray-50 rounded-2xl overflow-hidden flex items-center justify-center">
           {product.imageUrl ? (
-            <img src={`${API_BASE}${product.imageUrl}`} alt={product.name} className="w-full h-full object-cover" />
+            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
           ) : (
             <div className="text-gray-300">
               <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">

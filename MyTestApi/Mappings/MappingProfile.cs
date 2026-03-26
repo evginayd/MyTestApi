@@ -8,10 +8,7 @@ namespace MyTestApi.Mappings
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src =>
-                string.IsNullOrEmpty(src.ImagePath)
-                ? null
-                : $"/uploads/{Path.GetFileName(src.ImagePath)}"));
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImagePath));
             CreateMap<CreateProductDto, Product>();
             CreateMap<UpdateProductDto, Product>();
  
