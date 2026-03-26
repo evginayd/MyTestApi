@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(node -e \"const z = require\\(''zod''\\); console.log\\(typeof z.coerce, typeof z.coerce.number\\)\")"
+    ]
+  }
+}

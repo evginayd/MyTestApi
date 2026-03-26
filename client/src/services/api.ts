@@ -1,37 +1,40 @@
-import axios from 'axios';
+import api from '@/lib/axios';
 import type {
-    LoginDto, RegisterDto, AuthResponse,
-    ProductDto, CreateProductDto, UpdateProductDto
-} from '../types';
+  LoginDto,
+  RegisterDto,
+  AuthResponse,
+  ProductDto,
+  CreateProductDto,
+  UpdateProductDto,
+  PaginationParams,
+} from '@/types';
 
-const API = axios.create({
-    baseURL: 'https://mytestapi-vndo.onrender.com/api',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+export const authApi = {
+  login: (data: LoginDto) => api.post<AuthResponse>('/auth/login', data),
+  register: (data: RegisterDto) => api.post('/auth/register', data),
+};
 
-// Request Interceptor: Her isteðe otomatik JWT ekler
-API.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+export const productsApi = {
+  getAll: (params?: PaginationParams) =>
+    api.get<ProductDto[]>('/products', { params }),
 
-export const apiService = {
-    // Auth Ýþlemleri
-    auth: {
-        login: (data: LoginDto) => API.post<AuthResponse>('/auth/login', data),
-        register: (data: RegisterDto) => API.post('/auth/register', data),
-    },
-    // Ürün Ýþlemleri
-    products: {
-        getAll: () => API.get<ProductDto[]>('/products'),
-        getById: (id: number) => API.get<ProductDto>(`/products/${id}`),
-        create: (data: CreateProductDto) => API.post<ProductDto>('/products', data),
-        update: (id: number, data: UpdateProductDto) => API.put(`/products/${id}`, data),
-        delete: (id: number) => API.delete(`/products/${id}`),
-    }
+  getById: (id: number) => api.get<ProductDto>(`/products/${id}`),
+
+  create: (data: CreateProductDto) =>
+    api.post<ProductDto>('/products', data),
+
+  update: (id: number, data: UpdateProductDto) =>
+    api.put(`/products/${id}`, data),
+
+  delete: (id: number) => api.delete(`/products/${id}`),
+
+  restore: (id: number) => api.put(`/products/restore/${id}`),
+
+  uploadImage: (id: number, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post<{ imageUrl: string }>(`/products/${id}/upload-image`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };
