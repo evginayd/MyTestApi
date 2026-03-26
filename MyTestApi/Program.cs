@@ -51,7 +51,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
-        policy => policy.WithOrigins("http://localhost:5173") // React portun
+        policy => policy.WithOrigins(
+                            "http://localhost:5173",
+                            "https://localhost:5173",
+                            "http://localhost:5000",
+                            "https://localhost:5000")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });
@@ -90,6 +94,7 @@ app.UseAuthorization();  // Sonra yetkilendirme
 
 app.MapControllers();
 app.UseStaticFiles();
+app.MapFallbackToFile("index.html");
 
 // --- KRİTİK DEĞİŞİKLİK BURADA BAŞLIYOR ---
 

@@ -1,4 +1,17 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_testapi
+    ports:
+      - "5000:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=MyTestApiDb;Username=postgres;Password=admin123
+    depends_on:
+      - db
+    restart: always
+
   db:
     image: postgres:latest
     container_name: my_postgres_db
@@ -7,7 +20,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: MyTestApiDb
     ports:
-      - "5435:5432" # Eğer 5432 doluysa yukarıda konuştuğumuz gibi 5433 yapabilirsin
+      - "5435:5432"
     restart: always
 
   pgadmin:
