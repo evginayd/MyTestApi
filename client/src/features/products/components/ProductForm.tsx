@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/Input';
 import type { ProductDto } from '@/types';
 
 interface ProductFormProps {
-  onSubmit: (data: ProductFormValues, image: File | null) => void;
+  onSubmit: (data: ProductFormValues, image: File | null, imageRemoved: boolean) => void;
   isLoading: boolean;
   defaultValues?: ProductDto;
 }
@@ -21,6 +21,7 @@ export function ProductForm({ onSubmit, isLoading, defaultValues }: ProductFormP
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [imageRemoved, setImageRemoved] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -44,19 +45,21 @@ export function ProductForm({ onSubmit, isLoading, defaultValues }: ProductFormP
     const file = e.target.files?.[0];
     if (file) {
       setSelectedImage(file);
+      setImageRemoved(false);
     }
   };
 
   const removeImage = () => {
     setSelectedImage(null);
-    setPreview(defaultValues?.imageUrl || null);
+    setPreview(null);
+    setImageRemoved(true);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const handleFormSubmit = (data: ProductFormValues) => {
-    onSubmit(data, selectedImage);
+    onSubmit(data, selectedImage, imageRemoved);
   };
 
   return (

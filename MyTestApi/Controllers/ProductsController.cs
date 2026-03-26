@@ -85,6 +85,17 @@ namespace MyTestApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var product = await _service.GetByIdAsync(id);
+            if (product == null) return NotFound();
+
+            // Cloudinary'den görseli sil
+            if (!string.IsNullOrEmpty(product.ImagePath) && product.ImagePath.Contains("cloudinary"))
+            {
+                var publicId = _cloudinaryService.GetPublicIdFromUrl(product.ImagePath);
+                if (!string.IsNullOrEmpty(publicId))
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+
             var success = await _service.DeleteAsync(id);
             return success ? NoContent() : NotFound();
         }
@@ -98,6 +109,25 @@ namespace MyTestApi.Controllers
             product.DeletedAt = null;
             await _context.SaveChangesAsync();
             return Ok("Product restored");
+        }
+
+        [Authorize]
+        [HttpDelete("{id}/image")]
+        public async Task<IActionResult> DeleteImage(int id)
+        {
+            var product = await _service.GetByIdAsync(id);
+            if (product == null) return NotFound("Product not found");
+
+            if (!string.IsNullOrEmpty(product.ImagePath) && product.ImagePath.Contains("cloudinary"))
+            {
+                var publicId = _cloudinaryService.GetPublicIdFromUrl(product.ImagePath);
+                if (!string.IsNullOrEmpty(publicId))
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+
+            product.ImagePath = null;
+            await _service.UpdateImagePathAsync(product);
+            return Ok(new { message = "Image deleted" });
         }
 
         [HttpPost("{id}/upload-image")]

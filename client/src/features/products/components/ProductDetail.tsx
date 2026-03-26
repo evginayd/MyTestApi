@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Pencil, Trash2, Upload } from 'lucide-react';
+import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { useProduct } from '../hooks/useProduct';
-import { useDeleteProduct, useUploadImage } from '../hooks/useProductMutations';
+import { useDeleteProduct } from '../hooks/useProductMutations';
 import { Spinner } from '@/components/ui/Spinner';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -15,20 +15,12 @@ export function ProductDetail() {
   const { isAuthenticated } = useAuth();
   const { data: product, isLoading } = useProduct(Number(id));
   const deleteMutation = useDeleteProduct();
-  const uploadMutation = useUploadImage();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDelete = () => {
     deleteMutation.mutate(Number(id), {
       onSuccess: () => navigate('/'),
     });
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      uploadMutation.mutate({ id: Number(id), file });
-    }
   };
 
   if (isLoading) return <Spinner />;
@@ -64,12 +56,6 @@ export function ProductDetail() {
                   <Pencil className="w-4 h-4" /> Düzenle
                 </Button>
               </Link>
-              <label>
-                <Button variant="secondary" as-child className="cursor-pointer">
-                  <Upload className="w-4 h-4" /> Görsel Yükle
-                </Button>
-                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-              </label>
               <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
                 <Trash2 className="w-4 h-4" /> Sil
               </Button>

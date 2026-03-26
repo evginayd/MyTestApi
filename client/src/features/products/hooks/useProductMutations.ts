@@ -9,7 +9,7 @@ export function useCreateProduct() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async ({ data, image }: { data: CreateProductDto; image: File | null }) => {
+    mutationFn: async ({ data, image }: { data: CreateProductDto; image: File | null; imageRemoved?: boolean }) => {
       const response = await productsApi.create(data);
       const product = response.data;
 
@@ -35,11 +35,13 @@ export function useUpdateProduct(id: number) {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async ({ data, image }: { data: UpdateProductDto; image: File | null }) => {
+    mutationFn: async ({ data, image, imageRemoved }: { data: UpdateProductDto; image: File | null; imageRemoved: boolean }) => {
       await productsApi.update(id, data);
 
       if (image) {
         await productsApi.uploadImage(id, image);
+      } else if (imageRemoved) {
+        await productsApi.deleteImage(id);
       }
     },
     onSuccess: () => {

@@ -30,6 +30,8 @@ export const productsApi = {
 
   restore: (id: number) => api.put(`/products/restore/${id}`),
 
+  deleteImage: (id: number) => api.delete(`/products/${id}/image`),
+
   uploadImage: (id: number, file: File) => {
     const formData = new FormData();
     formData.append('file', file);

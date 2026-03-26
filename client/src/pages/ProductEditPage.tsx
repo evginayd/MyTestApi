@@ -21,7 +21,7 @@ export function ProductEditPage() {
       </button>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Ürünü Düzenle</h1>
       <ProductForm
-        onSubmit={(data, image) => updateMutation.mutate({ data, image })}
+        onSubmit={(data, image, imageRemoved) => updateMutation.mutate({ data, image, imageRemoved })}
         isLoading={updateMutation.isPending}
         defaultValues={product}
       />

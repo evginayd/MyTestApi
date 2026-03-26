@@ -13,7 +13,7 @@ export function ProductCreatePage() {
         <ArrowLeft className="w-4 h-4" /> Geri
       </button>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Yeni Ürün Oluştur</h1>
-      <ProductForm onSubmit={(data, image) => createMutation.mutate({ data, image })} isLoading={createMutation.isPending} />
+      <ProductForm onSubmit={(data, image, imageRemoved) => createMutation.mutate({ data, image, imageRemoved })} isLoading={createMutation.isPending} />
     </div>
   );
 }
