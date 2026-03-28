@@ -55,7 +55,8 @@ builder.Services.AddCors(options =>
                             "http://localhost:5173",
                             "https://localhost:5173",
                             "http://localhost:5000",
-                            "https://localhost:5000")
+                            "https://localhost:5000",
+                            "https://mytestapi-vndo.onrender.com")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
 });
@@ -85,7 +86,14 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseHttpsRedirection();
+
+// Production'da (Render) HTTPS redirect'i Render proxy zaten yapıyor,
+// container içinde tekrar yapmak döngüye yol açar
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseRouting();
 
 app.UseCors("AllowReactApp");
